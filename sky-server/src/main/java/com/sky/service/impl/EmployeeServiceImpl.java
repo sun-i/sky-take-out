@@ -96,8 +96,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 //        log.info("当前员工id: {}", currentId);
 
-        BaseContext.removeCurrentId();
-
         employeeMapper.insert(employee);
 
     }
@@ -113,6 +111,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
         Page<Employee> page = employeeMapper.page(employeePageQueryDTO);
         return new PageResult(page.getTotal(), page.getResult());
+    }
+
+    /**
+     * 启用、禁用员工账号
+     *
+     * @param status
+     * @param id
+     */
+    @Override
+    public void startAndStop(Integer status, Long id) {
+        Employee employee = new Employee();
+        employee.setId(id);
+        employee.setStatus(status);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.updateById(employee);
     }
 
 }
